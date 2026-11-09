@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "340518212084",
+    "project_id": "jogo-da-memoria-grupo6",
+    "storage_bucket": "jogo-da-memoria-grupo6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:340518212084:android:aa194e0e6553a3d025e9a1",
+        "android_client_info": {
+          "package_name": "com.example.jogodamemoria"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNmK4mSA-CTQ3Sxd6BTHpjtXqGxGeyeuc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

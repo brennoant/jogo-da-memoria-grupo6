@@ -26,7 +26,7 @@ class PartidasRepository(private val partidaDao: PartidaDAO) {
             partidaDao.atualizar(partida)
             null
         } catch (e: Exception) {
-            "Erro ao salvar partida: ${e.message}"
+            "Erro ao atualizar partida: ${e.message}"
         }
     }
 
@@ -35,7 +35,7 @@ class PartidasRepository(private val partidaDao: PartidaDAO) {
             partidaDao.deletar(partida)
             null
         } catch (e: Exception) {
-            "Erro ao salvar partida: ${e.message}"
+            "Erro ao excluir partida: ${e.message}"
         }
     }
 }

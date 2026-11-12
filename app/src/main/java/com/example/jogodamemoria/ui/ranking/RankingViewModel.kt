@@ -59,16 +59,19 @@ class RankingViewModel(
 
     // --- Funções de evento (chamadas pela tela) ---
 
+    // Atualiza o filtro de tema e reprocessa a lista exibida
     fun onFiltroTema(tema: String?) {
         _uiState.update { it.copy(filtroTema = tema) }
         aplicarFiltros()
     }
 
+    // Atualiza o filtro de dificuldade e reprocessa a lista exibida
     fun onFiltroDificuldade(dificuldade: String?) {
         _uiState.update { it.copy(filtroDificuldade = dificuldade) }
         aplicarFiltros()
     }
 
+    // Atualiza o critério de ordenação e reprocessa a lista exibida
     fun onOrdenacao(ordenacao: String) {
         _uiState.update { it.copy(ordenacao = ordenacao) }
         aplicarFiltros()

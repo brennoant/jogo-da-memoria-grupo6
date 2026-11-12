@@ -19,7 +19,7 @@ interface PartidaDAO {
     @Delete
     suspend fun deletar(partida: Partida)
 
-    // Maior pontuação primeiro: já sai na ordem do ranking
-    @Query("SELECT * FROM partidas ORDER BY pontuacao DESC")
+    // Maior pontuação primeiro; no empate, ganha quem foi mais rápido e depois quem errou menos
+    @Query("SELECT * FROM partidas ORDER BY pontuacao DESC, tempoSegundos ASC, tentativas ASC")
     fun buscarTodas(): Flow<List<Partida>>
 }

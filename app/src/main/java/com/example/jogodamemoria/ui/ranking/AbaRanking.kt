@@ -18,6 +18,9 @@ import com.example.jogodamemoria.data.local.AppDatabase
 import com.example.jogodamemoria.data.repository.PartidasRepository
 import androidx.compose.ui.tooling.preview.Preview
 
+private val PADDING_PADRAO_16 = 16.dp
+private val PADDING_PADRAO_8 = 8.dp
+
 // Assinatura fixa do contrato: recebe apenas o callback de navegação
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,11 +35,11 @@ fun AbaRanking(
     // Coleta o estado reativo: a tela se redesenha sozinha quando o uiState muda
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(PADDING_PADRAO)) {
         // Linha de filtros e ordenação
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(PADDING_PADRAO_8)
         ) {
             // Filtro por Tema
             FilterChip(
@@ -86,7 +89,7 @@ fun AbaRanking(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(PADDING_PADRAO))
 
         // Lista de partidas
         if (state.partidasExibidas.isEmpty()) {
@@ -97,13 +100,13 @@ fun AbaRanking(
                 Text("Nenhuma partida encontrada", style = MaterialTheme.typography.bodyLarge)
             }
         } else {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(PADDING_PADRAO_8)) {
                 items(state.partidasExibidas, key = { it.id }) { partida ->
                     Card(
                         onClick = { onAbrirDetalhes(partida.id) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
+                        Column(modifier = Modifier.padding(PADDING_PADRAO)) {
                             Text(
                                 text = "${partida.nomeJogador} — ${partida.pontuacao} pts",
                                 style = MaterialTheme.typography.titleMedium
@@ -120,7 +123,7 @@ fun AbaRanking(
 
         // Mensagem de erro (se houver)
         state.mensagemErro?.let { erro ->
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(PADDING_PADRAO_8))
             Text(erro, color = MaterialTheme.colorScheme.error)
         }
     }

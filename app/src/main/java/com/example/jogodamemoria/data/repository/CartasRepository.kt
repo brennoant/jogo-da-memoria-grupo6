@@ -52,18 +52,20 @@ class CartasRepository(
 
     suspend fun sincronizar(): String? {
         return try {
-            var cartasNuvem = firebase.buscarTodas()
+            val cartasNuvem = firebase.buscarTodas()
 
-            if (cartasNuvem.isEmpty()) {
-                val cartasLocais = cartaDao.buscarTodas().first()
-                for (carta in cartasLocais) {
-                    firebase.adicionar(carta)
-                }
-                cartasNuvem = firebase.buscarTodas()
+            // Cartas que estão só no celular (sem idRemoto) e que a nuvem ainda não tem
+            val cartasSoNoCelular = cartaDao.buscarTodas().first().filter { local ->
+                local.idRemoto.isEmpty() &&
+                    cartasNuvem.none { it.simbolo == local.simbolo && it.tema == local.tema }
+            }
+            for (carta in cartasSoNoCelular) {
+                firebase.adicionar(carta)
             }
 
+            // Agora a nuvem tem tudo: baixa e regrava no Room
             cartaDao.deletarTodas()
-            cartaDao.inserirTodas(cartasNuvem)
+            cartaDao.inserirTodas(firebase.buscarTodas())
             null
         } catch (e: Exception) {
             "Erro ao sincronizar: ${e.message}"

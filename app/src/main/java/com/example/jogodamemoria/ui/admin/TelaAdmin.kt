@@ -1,6 +1,11 @@
 package com.example.jogodamemoria.ui.admin
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -116,15 +121,70 @@ fun ConteudoAdmin(
             Text(it, color = MaterialTheme.colorScheme.error)
         }
 
-        // A lista de cartas com filtro entra aqui
+        // Filtro da lista (null = Todos)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = uiState.filtroTema == null,
+                onClick = { onFiltroTema(null) },
+                label = { Text("Todos") }
+            )
+            Temas.TODOS.forEach { tema ->
+                FilterChip(
+                    selected = uiState.filtroTema == tema,
+                    onClick = { onFiltroTema(tema) },
+                    label = { Text(tema) }
+                )
+            }
+        }
+
+        // Lista das cartas (só as do filtro escolhido)
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(uiState.cartasFiltradas) { carta ->
+                UmaCarta(
+                    carta = carta,
+                    onEdit = { onEdit(carta) },
+                    onDelete = { onDelete(carta) }
+                )
+            }
+        }
     }
 }
 
+// Uma linha da lista: emoji, nome, tema e os botões de editar e excluir
+@Composable
+fun UmaCarta(carta: Carta, onEdit: () -> Unit, onDelete: () -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${carta.simbolo}  ${carta.nome} (${carta.tema})",
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(onClick = onEdit) {
+                Icon(Icons.Default.Edit, contentDescription = "Editar")
+            }
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, contentDescription = "Excluir")
+            }
+        }
+    }
+}
+
+// Preview com cartas falsas (o Preview não consegue abrir o banco nem o Firebase)
 @Preview(showBackground = true)
 @Composable
 fun TelaAdminPreview() {
+    val cartasFalsas = listOf(
+        Carta(id = 1, simbolo = "🐶", nome = "Cachorro", tema = Temas.ANIMAIS),
+        Carta(id = 2, simbolo = "🍎", nome = "Maçã", tema = Temas.FRUTAS)
+    )
     ConteudoAdmin(
-        uiState = AdminUiState(),
+        uiState = AdminUiState(cartas = cartasFalsas, cartasFiltradas = cartasFalsas),
         onSimboloChange = {},
         onNomeChange = {},
         onTemaChange = {},

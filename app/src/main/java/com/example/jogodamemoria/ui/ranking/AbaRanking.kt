@@ -35,7 +35,7 @@ fun AbaRanking(
     // Coleta o estado reativo: a tela se redesenha sozinha quando o uiState muda
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(modifier = Modifier.padding(PADDING_PADRAO)) {
+    Column(modifier = Modifier.padding(PADDING_PADRAO_16)) {
         // Linha de filtros e ordenação
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -89,7 +89,7 @@ fun AbaRanking(
             )
         }
 
-        Spacer(modifier = Modifier.height(PADDING_PADRAO))
+        Spacer(modifier = Modifier.height(PADDING_PADRAO_16))
 
         // Lista de partidas
         if (state.partidasExibidas.isEmpty()) {
@@ -106,7 +106,7 @@ fun AbaRanking(
                         onClick = { onAbrirDetalhes(partida.id) },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Column(modifier = Modifier.padding(PADDING_PADRAO)) {
+                        Column(modifier = Modifier.padding(PADDING_PADRAO_16)) {
                             Text(
                                 text = "${partida.nomeJogador} — ${partida.pontuacao} pts",
                                 style = MaterialTheme.typography.titleMedium

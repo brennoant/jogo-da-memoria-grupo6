@@ -2,6 +2,7 @@ package com.example.jogodamemoria.data.local
 
 import com.example.jogodamemoria.Temas
 
+object CartasPadrao {
 
     val LISTA: List<Carta> = listOf(
         Carta(simbolo = "🐶", nome = "Cachorro", tema = Temas.ANIMAIS),

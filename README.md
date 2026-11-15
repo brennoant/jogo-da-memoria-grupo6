@@ -17,9 +17,3 @@ Aplicativo desenvolvido como trabalho final da disciplina de Desenvolvimento de 
 - **Navegação:** Navigation Compose
 - **Backend:** Firebase Firestore
 - **Padrões:** StateFlow + UiState, Factory Pattern, Repository Pattern
-
-## Capturas de Tela
-<!--  -->
-
-## Demonstração
-<!--  -->

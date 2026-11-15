@@ -7,7 +7,6 @@ import androidx.room3.Query
 import androidx.room3.Update
 import kotlinx.coroutines.flow.Flow
 
-// Operações da tabela "partidas"
 @Dao
 interface PartidaDAO {
     @Insert
@@ -19,7 +18,6 @@ interface PartidaDAO {
     @Delete
     suspend fun deletar(partida: Partida)
 
-    // Maior pontuação primeiro; no empate, ganha quem foi mais rápido e depois quem errou menos
     @Query("SELECT * FROM partidas ORDER BY pontuacao DESC, tempoSegundos ASC, tentativas ASC")
     fun buscarTodas(): Flow<List<Partida>>
 }

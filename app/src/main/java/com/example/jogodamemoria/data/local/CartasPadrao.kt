@@ -2,10 +2,7 @@ package com.example.jogodamemoria.data.local
 
 import com.example.jogodamemoria.Temas
 
-// Cartas que o app já traz de fábrica: 8 de cada tema (24 no total).
-// 8 é o máximo de pares que uma partida usa (Difícil), então qualquer dificuldade dá para jogar.
-// Sem id: o banco gera sozinho ao inserir.
-object CartasPadrao {
+
     val LISTA: List<Carta> = listOf(
         Carta(simbolo = "🐶", nome = "Cachorro", tema = Temas.ANIMAIS),
         Carta(simbolo = "🐱", nome = "Gato", tema = Temas.ANIMAIS),

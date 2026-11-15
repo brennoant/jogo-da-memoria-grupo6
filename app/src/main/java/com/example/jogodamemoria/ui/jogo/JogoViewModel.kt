@@ -24,9 +24,7 @@ class JogoViewModel(
     private val nomePadrao: String
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        JogoUiState(nomeParaSalvar = nomePadrao)
-    )
+    private val _uiState = MutableStateFlow(JogoUiState(nomeParaSalvar = nomePadrao))
     val uiState: StateFlow<JogoUiState> = _uiState.asStateFlow()
 
     private var carregamento: Job? = null
@@ -44,11 +42,8 @@ class JogoViewModel(
         carregamento?.cancel()
         comparacao?.cancel()
         cronometro?.cancel()
-
         _uiState.value = JogoUiState(nomeParaSalvar = nomePadrao)
-        carregamento = viewModelScope.launch {
-            montarTabuleiro()
-        }
+        carregamento = viewModelScope.launch { montarTabuleiro() }
     }
 
     private suspend fun montarTabuleiro() {
@@ -65,15 +60,15 @@ class JogoViewModel(
                 return
             }
 
-            val cartas = cartasDoTema.shuffled()
-                .take(quantidadeDePares)
-                .flatMap { listOf(it.simbolo, it.simbolo) }
-                .mapIndexed { indice, simbolo ->
-                    CartaJogo(id = indice, simbolo = simbolo)
-                }
-                .shuffled()
+            val cartasSorteadas = cartasDoTema.shuffled().take(quantidadeDePares)
+            val cartas = mutableListOf<CartaJogo>()
+            for (carta in cartasSorteadas) {
+                cartas.add(CartaJogo(id = cartas.size, simbolo = carta.simbolo))
+                cartas.add(CartaJogo(id = cartas.size, simbolo = carta.simbolo))
+            }
 
-            _uiState.update { it.copy(cartas = cartas) }
+            val tabuleiro = cartas.shuffled()
+            _uiState.update { it.copy(cartas = tabuleiro) }
             iniciarCronometro()
         } catch (erro: CancellationException) {
             throw erro
@@ -105,21 +100,15 @@ class JogoViewModel(
             if (it.id == id) it.copy(virada = true) else it
         }
         val primeira = abertas.firstOrNull()
-
         if (primeira == null) {
             _uiState.update { it.copy(cartas = cartasViradas) }
             return
         }
 
         val tentativas = estado.tentativas + 1
-
         if (primeira.simbolo == carta.simbolo) {
             val cartas = cartasViradas.map {
-                if (it.id == primeira.id || it.id == id) {
-                    it.copy(encontrada = true)
-                } else {
-                    it
-                }
+                if (it.id == primeira.id || it.id == id) it.copy(encontrada = true) else it
             }
             val venceu = cartas.all { it.encontrada }
             val pontuacao = if (venceu) {
@@ -128,34 +117,18 @@ class JogoViewModel(
             } else {
                 0
             }
-
             if (venceu) cronometro?.cancel()
-
             _uiState.update {
-                it.copy(
-                    cartas = cartas,
-                    tentativas = tentativas,
-                    venceu = venceu,
-                    pontuacao = pontuacao
-                )
+                it.copy(cartas = cartas, tentativas = tentativas, venceu = venceu, pontuacao = pontuacao)
             }
         } else {
-            _uiState.update {
-                it.copy(cartas = cartasViradas, tentativas = tentativas)
-            }
-
+            _uiState.update { it.copy(cartas = cartasViradas, tentativas = tentativas) }
             comparacao = viewModelScope.launch {
                 delay(1000)
                 _uiState.update { atual ->
-                    atual.copy(
-                        cartas = atual.cartas.map {
-                            if (it.id == primeira.id || it.id == id) {
-                                it.copy(virada = false)
-                            } else {
-                                it
-                            }
-                        }
-                    )
+                    atual.copy(cartas = atual.cartas.map {
+                        if (it.id == primeira.id || it.id == id) it.copy(virada = false) else it
+                    })
                 }
             }
         }
@@ -163,10 +136,7 @@ class JogoViewModel(
 
     fun onNomeParaSalvarChange(nome: String) {
         if (salvando || _uiState.value.partidaSalva) return
-
-        _uiState.update {
-            it.copy(nomeParaSalvar = nome, mensagemErro = null)
-        }
+        _uiState.update { it.copy(nomeParaSalvar = nome, mensagemErro = null) }
     }
 
     fun onSalvarPartida() {
@@ -188,16 +158,12 @@ class JogoViewModel(
             pontuacao = estado.pontuacao,
             data = System.currentTimeMillis()
         )
-
         salvando = true
         _uiState.update { it.copy(mensagemErro = null) }
-
         viewModelScope.launch {
             try {
                 val erro = partidasRepository.inserir(partida)
-                _uiState.update {
-                    it.copy(partidaSalva = erro == null, mensagemErro = erro)
-                }
+                _uiState.update { it.copy(partidaSalva = erro == null, mensagemErro = erro) }
             } finally {
                 salvando = false
             }

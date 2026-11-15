@@ -21,7 +21,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -45,17 +44,14 @@ fun TelaJogo(
     nomePadrao: String,
     onVoltar: () -> Unit,
     viewModel: JogoViewModel = viewModel(
-        factory = LocalContext.current.let { contexto ->
-            remember(contexto, tema, dificuldade, nomePadrao) {
-                val banco = AppDatabase.getDatabase(contexto)
-                JogoViewModelFactory(
-                    cartasRepository = CartasRepository(banco.cartaDAO(), FirebaseCartasService()),
-                    partidasRepository = PartidasRepository(banco.partidaDAO()),
-                    tema = tema,
-                    dificuldade = dificuldade,
-                    nomePadrao = nomePadrao
-                )
-            }
+        factory = AppDatabase.getDatabase(LocalContext.current).let { banco ->
+            JogoViewModelFactory(
+                cartasRepository = CartasRepository(banco.cartaDAO(), FirebaseCartasService()),
+                partidasRepository = PartidasRepository(banco.partidaDAO()),
+                tema = tema,
+                dificuldade = dificuldade,
+                nomePadrao = nomePadrao
+            )
         }
     )
 ) {
@@ -65,10 +61,10 @@ fun TelaJogo(
         tema = tema,
         dificuldade = dificuldade,
         uiState = uiState,
-        onCartaClicada = viewModel::onCartaClicada,
-        onNomeParaSalvarChange = viewModel::onNomeParaSalvarChange,
-        onSalvarPartida = viewModel::onSalvarPartida,
-        onReiniciar = viewModel::onReiniciar,
+        onCartaClicada = { viewModel.onCartaClicada(it) },
+        onNomeParaSalvarChange = { viewModel.onNomeParaSalvarChange(it) },
+        onSalvarPartida = { viewModel.onSalvarPartida() },
+        onReiniciar = { viewModel.onReiniciar() },
         onVoltar = onVoltar
     )
 }

@@ -1,77 +1,127 @@
 package com.example.jogodamemoria.ui.navegacao
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.jogodamemoria.Dificuldades
+import com.example.jogodamemoria.Perfis
 import com.example.jogodamemoria.Temas
+import com.example.jogodamemoria.ui.admin.TelaAdmin
+import com.example.jogodamemoria.ui.jogo.TelaJogo
+import com.example.jogodamemoria.ui.ranking.TelaDetalhesPartida
+import com.example.jogodamemoria.ui.sessao.SessaoViewModel
+import com.example.jogodamemoria.ui.sessao.TelaInicial
 
-// Liga cada rota a uma tela.
-// Por enquanto as telas são provisórias; cada uma vai ser trocada pela tela real.
 @Composable
 fun AppNavigation() {
-    // Controla qual tela está aberta e guarda a pilha de telas (para o botão voltar)
     val navController = rememberNavController()
+
+    val sessao: SessaoViewModel = viewModel()
+    val sessaoState by sessao.uiState.collectAsStateWithLifecycle()
+
+    fun trocarPerfil() {
+        sessao.onTrocarPerfil()
+        navController.navigate(Rotas.INICIAL) {
+            popUpTo(Rotas.INICIAL) { inclusive = true }
+        }
+    }
 
     NavHost(
         navController = navController,
         startDestination = Rotas.INICIAL,
-        modifier = Modifier.safeDrawingPadding() // não deixa o conteúdo ficar atrás da barra do celular
+        modifier = Modifier.safeDrawingPadding()
     ) {
-
-        // Tela Inicial
         composable(Rotas.INICIAL) {
-            TelaProvisoria(
-                texto = "Tela Inicial",
-                textoBotao = "Entrar como Jogador",
-                onBotaoClick = { navController.navigate(Rotas.JOGADOR) }
-            )
-        }
-
-        // Tela do Jogador (depois vai ter as abas Jogar, Ranking e Configurações)
-        composable(Rotas.JOGADOR) {
-            TelaProvisoria(
-                texto = "Tela do Jogador",
-                textoBotao = "Testar o Jogo",
-                onBotaoClick = {
-                    navController.navigate(Rotas.jogo(Temas.ANIMAIS, Dificuldades.FACIL))
+            TelaInicial(
+                onJogador = {
+                    sessao.onEscolherPerfil(Perfis.JOGADOR)
+                    navController.navigate(Rotas.JOGADOR)
+                },
+                onAdmin = {
+                    sessao.onEscolherPerfil(Perfis.ADMIN)
+                    navController.navigate(Rotas.ADMIN)
                 }
             )
         }
 
-        // Tela do Jogo: recebe o tema e a dificuldade pela rota
+        composable(Rotas.JOGADOR) {
+            if (sessaoState.perfil == Perfis.JOGADOR) {
+                TelaJogador(navController = navController, sessao = sessao)
+            } else {
+                AvisoPerfil(onVoltar = { trocarPerfil() })
+            }
+        }
+
         composable(Rotas.JOGO) { entry ->
             val tema = entry.arguments?.getString("tema") ?: Temas.ANIMAIS
             val dificuldade = entry.arguments?.getString("dificuldade") ?: Dificuldades.FACIL
 
-            TelaProvisoria(
-                texto = "Jogo - tema: $tema, dificuldade: $dificuldade",
-                textoBotao = "Voltar",
-                onBotaoClick = { navController.popBackStack() }
+            TelaJogo(
+                tema = tema,
+                dificuldade = dificuldade,
+                nomePadrao = sessaoState.nomePadrao,
+                onVoltar = { navController.popBackStack() }
             )
         }
 
-        // Tela de Detalhes da Partida: recebe o id da partida pela rota
         composable(Rotas.DETALHES) { entry ->
             val id = entry.arguments?.getString("id")?.toIntOrNull() ?: 0
 
-            TelaProvisoria(
-                texto = "Detalhes da partida $id",
-                textoBotao = "Voltar",
-                onBotaoClick = { navController.popBackStack() }
+            TelaDetalhesPartida(
+                id = id,
+                onVoltar = { navController.popBackStack() }
             )
         }
 
-        // Tela do Admin
         composable(Rotas.ADMIN) {
-            TelaProvisoria(
-                texto = "Tela do Admin",
-                textoBotao = "Voltar",
-                onBotaoClick = { navController.popBackStack() }
-            )
+            if (sessaoState.perfil == Perfis.ADMIN) {
+                TelaAdmin(onTrocarPerfil = { trocarPerfil() })
+            } else {
+                AvisoPerfil(onVoltar = { trocarPerfil() })
+            }
         }
+    }
+}
+
+@Composable
+fun AvisoPerfil(onVoltar: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("🔒 Escolha um perfil na tela inicial")
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onVoltar) {
+            Text("Voltar ao início")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AvisoPerfilPreview() {
+    MaterialTheme {
+        AvisoPerfil(onVoltar = {})
     }
 }

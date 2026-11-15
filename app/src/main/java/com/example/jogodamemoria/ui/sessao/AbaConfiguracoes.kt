@@ -1,12 +1,5 @@
 package com.example.jogodamemoria.ui.sessao
 
-// ╔══════════════════════════════════════════════╗
-// ║  AbaConfiguracoes.kt                         ║
-// ║  ABA 3 do Jogador: nome padrão, dificuldade  ║
-// ║  padrão e botão Trocar perfil                ║
-// ║  Lê e altera o SessaoViewModel compartilhado ║
-// ╚══════════════════════════════════════════════╝
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,14 +22,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jogodamemoria.Dificuldades
 
-// O viewModel NÃO tem valor padrão: ele vem do AppNavigation,
-// para ser o mesmo objeto que a Tela Inicial e o Jogo usam.
 @Composable
 fun AbaConfiguracoes(
     viewModel: SessaoViewModel,
     onTrocarPerfil: () -> Unit
 ) {
-    // Lê o estado; quando ele muda, a tela se redesenha sozinha
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
@@ -48,8 +38,6 @@ fun AbaConfiguracoes(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // ------ NOME PADRÃO ------
-        // O texto vem do uiState e cada letra digitada vai para o ViewModel
         OutlinedTextField(
             value = uiState.nomePadrao,
             onValueChange = { viewModel.onNomePadraoChange(it) },
@@ -60,17 +48,14 @@ fun AbaConfiguracoes(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // ------ DIFICULDADE PADRÃO ------
         Text("Dificuldade padrão", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Um FilterChip para cada dificuldade de Dificuldades.TODAS
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Dificuldades.TODAS.forEach { dificuldade ->
                 FilterChip(
                     selected = uiState.dificuldadePadrao == dificuldade,
                     onClick = { viewModel.onDificuldadePadraoChange(dificuldade) },
-                    // Na tela aparece "Fácil"; no estado fica guardado "FACIL"
                     label = { Text(Dificuldades.nomeExibicao(dificuldade)) }
                 )
             }
@@ -78,8 +63,6 @@ fun AbaConfiguracoes(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // ------ TROCAR PERFIL ------
-        // Primeiro apaga o perfil no ViewModel, depois o AppNavigation volta para a Tela Inicial
         Button(
             onClick = {
                 viewModel.onTrocarPerfil()
@@ -92,8 +75,6 @@ fun AbaConfiguracoes(
     }
 }
 
-// ── Preview ──────────────────────────────────────
-// SessaoViewModel não precisa de Factory, então viewModel() já cria um para o Preview
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun AbaConfiguracoesPreview() {

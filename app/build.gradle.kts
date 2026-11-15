@@ -31,7 +31,6 @@ android {
 }
 
 dependencies {
-    // Room3 (banco local) - mesmo padrão do banco-02 do professor
     val room_version = "3.0.3"
     implementation("androidx.room3:room3-runtime:$room_version")
     ksp("androidx.room3:room3-compiler:$room_version")
@@ -43,7 +42,6 @@ dependencies {
     // Permite usar .await() nas chamadas do Firebase dentro de coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
 
-    // ViewModel dentro do Compose: viewModel() e collectAsStateWithLifecycle()
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 

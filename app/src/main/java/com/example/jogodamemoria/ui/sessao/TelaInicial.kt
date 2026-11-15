@@ -1,12 +1,5 @@
 package com.example.jogodamemoria.ui.sessao
 
-// ╔══════════════════════════════════════════════╗
-// ║  TelaInicial.kt                              ║
-// ║  TELA 1: título + dois botões grandes        ║
-// ║  Jogador e Admin (sem login nem senha)       ║
-// ║  A tela não navega: só avisa o clique        ║
-// ╚══════════════════════════════════════════════╝
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,8 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-// onJogador e onAdmin são funções que o AppNavigation entrega.
-// Assim a tela não precisa conhecer o navController nem o ViewModel.
 @Composable
 fun TelaInicial(onJogador: () -> Unit, onAdmin: () -> Unit) {
     Column(
@@ -43,7 +34,6 @@ fun TelaInicial(onJogador: () -> Unit, onAdmin: () -> Unit) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Botão grande do Jogador
         Button(
             onClick = onJogador,
             modifier = Modifier
@@ -55,7 +45,6 @@ fun TelaInicial(onJogador: () -> Unit, onAdmin: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botão grande do Admin (contornado, para diferenciar do Jogador)
         OutlinedButton(
             onClick = onAdmin,
             modifier = Modifier
@@ -67,7 +56,6 @@ fun TelaInicial(onJogador: () -> Unit, onAdmin: () -> Unit) {
     }
 }
 
-// ── Preview ──────────────────────────────────────
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TelaInicialPreview() {

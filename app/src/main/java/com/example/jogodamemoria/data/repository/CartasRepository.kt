@@ -54,7 +54,6 @@ class CartasRepository(
         return try {
             val cartasNuvem = firebase.buscarTodas()
 
-            // Cartas que estão só no celular (sem idRemoto) e que a nuvem ainda não tem
             val cartasSoNoCelular = cartaDao.buscarTodas().first().filter { local ->
                 local.idRemoto.isEmpty() &&
                     cartasNuvem.none { it.simbolo == local.simbolo && it.tema == local.tema }
@@ -63,7 +62,6 @@ class CartasRepository(
                 firebase.adicionar(carta)
             }
 
-            // Agora a nuvem tem tudo: baixa e regrava no Room
             cartaDao.deletarTodas()
             cartaDao.inserirTodas(firebase.buscarTodas())
             null

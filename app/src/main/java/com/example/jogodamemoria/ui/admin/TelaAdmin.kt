@@ -50,7 +50,6 @@ fun TelaAdmin(
     )
 }
 
-// Só desenha a tela; não conhece banco nem Firebase, por isso funciona no Preview
 @Composable
 fun ConteudoAdmin(
     uiState: AdminUiState,
@@ -68,7 +67,6 @@ fun ConteudoAdmin(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Formulário de cadastro/edição
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -121,7 +119,6 @@ fun ConteudoAdmin(
             Text(it, color = MaterialTheme.colorScheme.error)
         }
 
-        // Filtro da lista (null = Todos)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
                 selected = uiState.filtroTema == null,
@@ -137,7 +134,6 @@ fun ConteudoAdmin(
             }
         }
 
-        // Lista das cartas (só as do filtro escolhido)
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -153,7 +149,6 @@ fun ConteudoAdmin(
     }
 }
 
-// Uma linha da lista: emoji, nome, tema e os botões de editar e excluir
 @Composable
 fun UmaCarta(carta: Carta, onEdit: () -> Unit, onDelete: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -175,7 +170,6 @@ fun UmaCarta(carta: Carta, onEdit: () -> Unit, onDelete: () -> Unit) {
     }
 }
 
-// Preview com cartas falsas (o Preview não consegue abrir o banco nem o Firebase)
 @Preview(showBackground = true)
 @Composable
 fun TelaAdminPreview() {
